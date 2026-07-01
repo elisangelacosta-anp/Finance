@@ -8,15 +8,19 @@ namespace Finance.Api.Data;
 public class MongoDbContext
 {
     private readonly IMongoDatabase _database;
+    private readonly string _collectionName;
 
     public MongoDbContext(IOptions<MongoSettings> settings)
     {
         var client = new MongoClient(settings.Value.ConnectionString);
 
         _database = client.GetDatabase(settings.Value.DatabaseName);
+        _collectionName = string.IsNullOrWhiteSpace(settings.Value.CollectionName)
+            ? "FinancialTransactions"
+            : settings.Value.CollectionName;
     }
 
     public IMongoCollection<FinancialTransaction> FinancialTransactions =>
         _database.GetCollection<FinancialTransaction>(
-            "FinancialTransactions");
+            _collectionName);
 }

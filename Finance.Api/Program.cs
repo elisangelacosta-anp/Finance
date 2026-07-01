@@ -21,11 +21,7 @@ builder.Services.Configure<MongoSettings>(
 
 builder.Services.AddSingleton<MongoDbContext>();
 
-builder.Services.AddScoped<
-    IFinancialTransactionRepository,
-    MongoFinancialTransactionRepository>();
-
-builder.Services.AddScoped<IFinancialTransactionRepository, MongoFinancialTransactionRepository>();
+builder.Services.AddScoped<IFinancialTransactionRepository,MongoFinancialTransactionRepository>();
 builder.Services.AddScoped<IFinancialTransactionService, FinancialTransactionService>();
 
 var app = builder.Build();
