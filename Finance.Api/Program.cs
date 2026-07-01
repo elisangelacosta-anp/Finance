@@ -2,7 +2,7 @@ using Finance.Api.Data;
 using Finance.Api.Interfaces;
 using Finance.Api.Repositories;
 using Finance.Api.Services;
-using Microsoft.EntityFrameworkCore;
+using Finance.Api.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,11 +16,16 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<FinanceDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.Configure<MongoSettings>(
+    builder.Configuration.GetSection("MongoSettings"));
 
-builder.Services.AddScoped<IFinancialTransactionRepository, FinancialTransactionRepository>();
+builder.Services.AddSingleton<MongoDbContext>();
+
+builder.Services.AddScoped<
+    IFinancialTransactionRepository,
+    MongoFinancialTransactionRepository>();
+
+builder.Services.AddScoped<IFinancialTransactionRepository, MongoFinancialTransactionRepository>();
 builder.Services.AddScoped<IFinancialTransactionService, FinancialTransactionService>();
 
 var app = builder.Build();
